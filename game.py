@@ -122,3 +122,16 @@ class Item:
         elif self.rarity == "legendary":
             return 500
 
+def menu():
+    print("Main Menu:")
+    print("1) Create a new character")
+    print("2) Load saved character")
+    print("3) Exit game")
+
+def characterCreation():
+    name = input("Please enter your character's name:")
+    classs = input("Please enter your character's class (e.g. warrior, mage):")
+    race = input("Select your character's race: human, elf, troll, orc:")
+
+    PlayerCharacter.__init__(self, name, 100, 100, 100, classs, race)
+
