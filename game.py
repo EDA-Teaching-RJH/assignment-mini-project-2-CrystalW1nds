@@ -1,3 +1,5 @@
+import csv
+
 # Class to represent a weapon in the game - this is inherited by both the player character and the enemy NPC classes
 class Weapon:
 
@@ -18,15 +20,14 @@ class Weapon:
 # Class to represent the player character in the game
 class PlayerCharacter:
 
-    def __init__ (self, name, health, mana, stamina, classs, race):
+    def __init__ (self, name, health, mana, stamina, classs, race, Weapon):
         self.name = name
         self.health = health
         self.mana = mana
         self.stamina = stamina
         self.classs = classs
         self.race = race
-        self.balance = 0
-        self.inventory = [self.Weapon]
+        self.weapon = Weapon
 
     def isAlive(self):
         if self.health > 0:
@@ -80,7 +81,7 @@ class EnemyNPC:
         self.stamina = stamina
         self.classs = classs
         self.race = race
-        self.inventory = [Weapon]
+        self.weapon = Weapon
 
     def attackTarget(self, target):
         if self.isAlive() == True:
@@ -131,9 +132,15 @@ def menu():
 def characterCreation():
     name = input("Please enter your character's name:")
     classs = input("Please enter your character's class (e.g. warrior, mage):")
-    race = input("Select your character's race: human, elf, troll, orc:")
+    race = input("Select your character's race (e.g human, elf, troll, orc):")
 
     PlayerCharacter.__init__(self, name, 100, 100, 100, classs, race)
+
+#this uses the csv library to write the player's character information to the character saves file
+def writeCharacterToCSV(character):
+    with open('characterSheet.csv', mode='w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow([character.name, character.health, character.mana, character.stamina, character.classs, character.race, character.weapon.name, character.weapon.damage, character.weapon.durability, character.weapon.type])
 
 def mainMenuSeq():
     menu()
@@ -141,3 +148,13 @@ def mainMenuSeq():
 
     if choice == "1":
         characterCreation()
+    
+    elif choice == "2":
+        print("Load saved character functionality is not yet implemented.")
+
+    elif choice == "3":
+        print("Exiting game. Goodbye!")
+        print("Saving game...")
+
+        exit()
+
