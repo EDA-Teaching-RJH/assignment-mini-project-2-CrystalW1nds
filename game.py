@@ -135,3 +135,9 @@ def characterCreation():
 
     PlayerCharacter.__init__(self, name, 100, 100, 100, classs, race)
 
+def mainMenuSeq():
+    menu()
+    choice = input("Please enter the number of your choice: ")
+
+    if choice == "1":
+        characterCreation()

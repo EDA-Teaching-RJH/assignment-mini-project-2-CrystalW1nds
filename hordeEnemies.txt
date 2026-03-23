@@ -1,0 +1,4 @@
+Orc
+Tauren
+Undead
+Troll
