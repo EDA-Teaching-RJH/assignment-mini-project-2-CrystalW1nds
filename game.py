@@ -2,14 +2,14 @@ import csv
 import random
 
 class Character:
-    def __init__(self, name, health, mana, stamina, classs, race, Weapon):
+    def __init__(self, name, health, mana, stamina, classs, race, weapon):
         self.name = name
         self.health = health
         self.mana = mana
         self.stamina = stamina
         self.classs = classs
         self.race = race
-        self.Weapon = Weapon
+        self.weapon = weapon
 
     def isAlive(self):
         if self.health > 0:
@@ -44,40 +44,40 @@ class Weapon:
 # Class to represent the player character in the game
 class PlayerCharacter(Character):
 
-    def __init__ (self, name, health, mana, stamina, classs, race, Weapon):
-        super().__init__(name, health, mana, stamina, classs, race, Weapon)
+    def __init__ (self, name, health, mana, stamina, classs, race, weapon):
+        super().__init__(name, health, mana, stamina, classs, race, weapon)
         
     def attackTarget(self, target):
         if self.isAlive():
             print(f"{self.name} attacks {target.name} for {self.weapon.damage} damage!")
-            self.Weapon.use(target)
+            self.weapon.use(target)
 
-            if self.Weapon.type == "melee":
+            if self.weapon.type == "melee":
                 self.stamina = self.stamina - 10
-            elif self.Weapon.type == "magic":
+            elif self.weapon.type == "magic":
                 self.mana = self.mana - 10
 
         else:
-            print("You are dead and cannot attack the " + target + ".")
+            print(f"You are dead and cannot attack the {target.name}.")
 
-    def heal(self, target):
+    def heal(self):
         if self.isAlive() == True:
-            print("You heal yourself for " + str(self.Weapon.damage) + " hitpoints!")
+            print("You heal yourself for " + str(self.weapon.damage) + " hitpoints!")
 
-            self.health = self.health + self.Weapon.damage
+            self.health = self.health + self.weapon.damage
             self.mana = self.mana - 10
 
 
 # Class to represent an enemy NPC in the game
 class EnemyNPC(Character):
 
-    def __init__(self, health, mana, stamina, classs, race, Weapon):
-        super().__init__(name, health, mana, stamina, classs, race, Weapon)
+    def __init__(self, name, health, mana, stamina, classs, race, weapon):
+        super().__init__(name, health, mana, stamina, classs, race, weapon)
 
     def attackTarget(self, target):
         if self.isAlive():
             print(f"{self.name} attacks {target.name} for {self.weapon.damage} damage!")
-            self.Weapon.use(target)
+            self.weapon.use(target)
 
         else:
             print("The " + self.classs + " is dead and cannot attack you.")
@@ -159,18 +159,25 @@ def loadCharacter(filename='characterSheet.csv'):
         return character
 
 def mainMenuSeq():
-    menu()
-    choice = input("Please enter the number of your choice: ")
-
-    if choice == "1":
-        characterCreation()
+    while True:
     
-    elif choice == "2":
-        print("Load saved character functionality is not yet implemented.")
+        menu()
+        choice = input("Please enter the number of your choice: ")
 
-    elif choice == "3":
-        print("Exiting game. Goodbye!")
-        print("Saving game...")
+        if choice == "1":
+            character = characterCreation()
+            if character:
+                print(f"Welcome, {character.name}.")
+        elif choice == "2":
+            try:
+                character = loadCharacter()
+                print(f"Welcome back, {character.name}.")
+            except FileNotFoundError:
+                print("No saved character found. Please create a new character.")
+        elif choice == "3":
+            print("Exiting game. Goodbye!")
+            break
+        else:
+            print("Invalid choice. Please enter 1, 2, or 3.")
 
-        exit()
 
