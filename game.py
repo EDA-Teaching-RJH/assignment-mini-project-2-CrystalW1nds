@@ -25,16 +25,18 @@ class Character:
 # Class to represent a weapon in the game - this is inherited by both the player character and the enemy NPC classes
 class Weapon:
 
-    def __init__ (self, damage, durability, type, Item):
-        self.name = Item.name
+    def __init__ (self, name, damage, durability, type):
+        self.name = name
         self.damage = damage
         self.durability = durability
         self.type = type
 
     def use(self, target):
         if self.durability > 0:
-            self.durability = self.durability - 1
-            target.health = target.health - self.damage
+            self.durability -= 1
+            target.takeDamage(self.damage)
+        else:
+            print(f"The {self.name} is broken and cannot be used.")
 
         return target
 
@@ -106,10 +108,45 @@ def characterCreation():
     writeCharacterToCSV(character)
 
 #this uses the csv library to write the player's character information to the character saves file
-def writeCharacterToCSV(character):
-    with open('characterSheet.csv', mode='w', newline='') as file:
+def writeCharacterToCSV(character, filename='characterSheet.csv'):
+    with open(filename, mode='w', newline="") as file:
         writer = csv.writer(file)
-        writer.writerow([character.name, character.health, character.mana, character.stamina, character.classs, character.race, character.weapon.name, character.weapon.damage, character.weapon.durability, character.weapon.type])
+        writer.writerow([
+            character.name,
+            character.health,
+            character.mana,
+            character.stamina,
+            character.classs,
+            character.race, 
+            character.weapon.name,
+            character.weapon.damage,
+            character.weapon.durability,
+            character.weapon.type
+            ])
+        
+def loadCharacter(filename='characterSheet.csv'):
+    with open(filename, mode='r') as file:
+        reader = csv.reader(file)
+        row = next(reader)
+
+        weapon = Weapon(
+            row[6],
+            int(row[7]),
+            int(row[8]),
+            row[9]
+        )
+        
+        character = PlayerCharacter(
+            row[0],
+            int(row[1]),
+            int(row[2]),
+            int(row[3]),
+            row[4],
+            row[5],
+            weapon
+        )
+
+        return character
 
 def mainMenuSeq():
     menu()
