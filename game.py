@@ -92,7 +92,7 @@ def menu():
 def characterCreation():
     name = input("Please enter your character's name:")
     classs = input("Please enter your character's class (warrior/mage): ").lower()
-    race = input("Select your character's race: ").lower()
+    race = input("Select your character's race: (human/elf/troll/orc)").lower()
 
     weapon = getWeaponForClass(classs)
 
