@@ -1,6 +1,4 @@
-import os
 import unittest
-import csv
 from game import Weapon, PlayerCharacter, EnemyNPC, loadCharacter, writeCharacterToCSV
 from validators import validClass, validName, validRace
 
