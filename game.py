@@ -91,21 +91,31 @@ def menu():
 
 def characterCreation():
     name = input("Please enter your character's name:")
-    classs = input("Please enter your character's class (e.g. warrior, mage):")
-    race = input("Select your character's race (e.g human, elf, troll, orc):")
+    classs = input("Please enter your character's class (warrior/mage): ").lower()
+    race = input("Select your character's race: ").lower()
 
-    if classs == "warrior":
-        selection= random.randint(1, 4)
+    weapon = getWeaponForClass(classs)
 
-    elif classs == "mage":
-        selection = random.randint(1,3)
+    if weapon is None:
+        print("Invalid class selection. Defaulting to warrior.")
+        classs = "warrior"
+        weapon = getWeaponForClass(classs)
 
-    else:
-        print("Invalid class selection. Please choose either 'warrior' or 'mage'.")
-        return
-
-    character = PlayerCharacter(name, 100, 100, 100, classs, race, Weapon)
+    character = PlayerCharacter(name, 100, 100, 100, classs, race, weapon)
     writeCharacterToCSV(character)
+    print(f"Character {name} created successfully and saved.")
+    return character
+
+
+def getWeaponForClass(classs):
+    if classs == "warrior":
+        return Weapon("Sword", 20, 100, "melee")
+    elif classs == "mage":
+        return Weapon("Staff", 20, 100, "magic")
+    else:
+        print("Invalid class selection. Defaulting to warrior.")
+        return None
+
 
 #this uses the csv library to write the player's character information to the character saves file
 def writeCharacterToCSV(character, filename='characterSheet.csv'):
