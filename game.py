@@ -94,7 +94,7 @@ def menu():
 def characterCreation():
     name = input("Please enter your character's name:")
     while not validName(name):
-        print("Invalid name. Must be 2-12 letters only.")
+        print("Invalid name. Must be 2-12 letters only, and have no numbers or special characters.")
         name = input("Please enter your character's name:")
     
     classs = input("Please enter your character's class (warrior/mage): ").lower()
