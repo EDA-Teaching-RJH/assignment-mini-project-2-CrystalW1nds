@@ -1,5 +1,6 @@
 import csv
-import random
+from validators import validClass, validName, validRace
+
 
 class Character:
     def __init__(self, name, health, mana, stamina, classs, race, weapon):
@@ -91,8 +92,19 @@ def menu():
 
 def characterCreation():
     name = input("Please enter your character's name:")
+    while not validName(name):
+        print("Invalid name. Must be 2-12 letters only.")
+        name = input("Please enter your character's name:")
+    
     classs = input("Please enter your character's class (warrior/mage): ").lower()
+    while not validClass(classs):
+        print("Invalid class. Must be 'warrior' or 'mage'.")
+        classs = input("Please enter your character's class (warrior/mage): ").lower()
+    
     race = input("Select your character's race: (human/elf/troll/orc)").lower()
+    while not validRace(race):
+        print("Invalid race. Must be 'human', 'elf', 'troll', or 'orc'.")
+        race = input("Select your character's race: (human/elf/troll/orc)").lower()
 
     weapon = getWeaponForClass(classs)
 
