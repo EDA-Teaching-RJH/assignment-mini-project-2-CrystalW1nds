@@ -1,4 +1,26 @@
 import csv
+import random
+
+class Character:
+    def __init__(self, name, health, mana, stamina, classs, race, Weapon):
+        self.name = name
+        self.health = health
+        self.mana = mana
+        self.stamina = stamina
+        self.classs = classs
+        self.race = race
+        self.Weapon = Weapon
+
+    def isAlive(self):
+        if self.health > 0:
+            return True
+        else:
+            return False
+        
+    def takeDamage(self, damage):
+        self.health = self.health - damage
+        if self.health < 0:
+            self.health = 0
 
 # Class to represent a weapon in the game - this is inherited by both the player character and the enemy NPC classes
 class Weapon:
@@ -18,27 +40,15 @@ class Weapon:
 
 
 # Class to represent the player character in the game
-class PlayerCharacter:
+class PlayerCharacter(Character):
 
     def __init__ (self, name, health, mana, stamina, classs, race, Weapon):
-        self.name = name
-        self.health = health
-        self.mana = mana
-        self.stamina = stamina
-        self.classs = classs
-        self.race = race
-        self.weapon = Weapon
-
-    def isAlive(self):
-        if self.health > 0:
-            return True
-        else:
-            return False
+        super().__init__(name, health, mana, stamina, classs, race, Weapon)
         
     def attackTarget(self, target):
-        if self.isAlive() == True:
-            print("You attack the " + target + " for " + str(self.Weapon.damage) + " hitpoints!")
-            self.Weapon.use()
+        if self.isAlive():
+            print(f"{self.name} attacks {target.name} for {self.weapon.damage} damage!")
+            self.Weapon.use(target)
 
             if self.Weapon.type == "melee":
                 self.stamina = self.stamina - 10
@@ -55,73 +65,21 @@ class PlayerCharacter:
             self.health = self.health + self.Weapon.damage
             self.mana = self.mana - 10
 
-    def viewInventory(self):
-        if len(self.inventory) == 1:
-            print("You have the following item in your inventory: " + self.inventory[0].name)
-
-        elif len(self.inventory) > 1:
-            print("You have the following items in your inventory: ")
-            for item in self.inventory:
-                print("- " + item.name)
-        
-        elif len(self.inventory) == 0:
-            print("Your inventory is empty.")
-
-    def pickupItem(self, Item):
-        self.inventory.append(Item)
-        print("You picked up the " + Item.name + " and added it to your inventory.")
-
 
 # Class to represent an enemy NPC in the game
-class EnemyNPC:
+class EnemyNPC(Character):
 
     def __init__(self, health, mana, stamina, classs, race, Weapon):
-        self.health = health
-        self.mana = mana
-        self.stamina = stamina
-        self.classs = classs
-        self.race = race
-        self.weapon = Weapon
+        super().__init__(name, health, mana, stamina, classs, race, Weapon)
 
     def attackTarget(self, target):
-        if self.isAlive() == True:
-            print("The " + self.classs + " attacks you for " + str(self.Weapon.damage) + " hitpoints!")
-            self.Weapon.use()
-
-            if self.Weapon.type == "melee":
-                self.stamina = self.stamina - 10
-            elif self.Weapon.type == "magic":
-                self.mana = self.mana - 10
+        if self.isAlive():
+            print(f"{self.name} attacks {target.name} for {self.weapon.damage} damage!")
+            self.Weapon.use(target)
 
         else:
             print("The " + self.classs + " is dead and cannot attack you.")
 
-    # Uses an if statement to check that the enemy's health is above 0 before allowing it to attack.
-    def isAlive(self):
-        if self.health > 0:
-            return True
-        else:
-            return False
-
-# Class to represent an item in the game - this is inherited by the player character  
-class Item:
-
-    def __init__ (self, name, rarity):
-        self.name = name
-        self.rarity = rarity
-        self.value = self.calculateValue()
-
-    def calculateValue(self):
-        if self.rarity == "common":
-            return 10
-        elif self.rarity == "uncommon":
-            return 20
-        elif self.rarity == "rare":
-            return 50
-        elif self.rarity == "epic":
-            return 100
-        elif self.rarity == "legendary":
-            return 500
 
 def menu():
     print("Main Menu:")
@@ -134,7 +92,18 @@ def characterCreation():
     classs = input("Please enter your character's class (e.g. warrior, mage):")
     race = input("Select your character's race (e.g human, elf, troll, orc):")
 
-    PlayerCharacter.__init__(self, name, 100, 100, 100, classs, race)
+    if classs == "warrior":
+        selection= random.randint(1, 4)
+
+    elif classs == "mage":
+        selection = random.randint(1,3)
+
+    else:
+        print("Invalid class selection. Please choose either 'warrior' or 'mage'.")
+        return
+
+    character = PlayerCharacter(name, 100, 100, 100, classs, race, Weapon)
+    writeCharacterToCSV(character)
 
 #this uses the csv library to write the player's character information to the character saves file
 def writeCharacterToCSV(character):
