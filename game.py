@@ -26,11 +26,11 @@ class Character:
 # Class to represent a weapon in the game - this is inherited by both the player character and the enemy NPC classes
 class Weapon:
 
-    def __init__ (self, name, damage, durability, type):
+    def __init__ (self, name, damage, durability, wType):
         self.name = name
         self.damage = damage
         self.durability = durability
-        self.type = type
+        self.wType = wType
 
     def use(self, target):
         if self.durability > 0:
@@ -53,9 +53,9 @@ class PlayerCharacter(Character):
             print(f"{self.name} attacks {target.name} for {self.weapon.damage} damage!")
             self.weapon.use(target)
 
-            if self.weapon.type == "melee":
+            if self.weapon.wType == "melee":
                 self.stamina = self.stamina - 10
-            elif self.weapon.type == "magic":
+            elif self.weapon.wType == "magic":
                 self.mana = self.mana - 10
 
         else:
@@ -88,7 +88,8 @@ def menu():
     print("Main Menu:")
     print("1) Create a new character")
     print("2) Load saved character")
-    print("3) Exit game")
+    print("3) Demo combat")
+    print("4) Exit game")
 
 def characterCreation():
     name = input("Please enter your character's name:")
@@ -143,7 +144,7 @@ def writeCharacterToCSV(character, filename='characterSheet.csv'):
             character.weapon.name,
             character.weapon.damage,
             character.weapon.durability,
-            character.weapon.type
+            character.weapon.wType
             ])
         
 def loadCharacter(filename='characterSheet.csv'):
@@ -171,6 +172,9 @@ def loadCharacter(filename='characterSheet.csv'):
         return character
 
 def mainMenuSeq():
+    character = None
+    print("Welcome to the RPG Game!")
+
     while True:
     
         menu()
@@ -187,9 +191,46 @@ def mainMenuSeq():
             except FileNotFoundError:
                 print("No saved character found. Please create a new character.")
         elif choice == "3":
+            if character is None:
+                print("No character loaded. Please create or load a character first.")
+            else:
+                battleDemo(character)
+        elif choice == "4":
             print("Exiting game. Goodbye!")
             break
         else:
             print("Invalid choice. Please enter 1, 2, or 3.")
 
+def battleDemo(player):
+    print("Starting battle demo...")
+    enemyWeapon = Weapon("Sword", 10, 20, "melee")
+    enemy = EnemyNPC("Goblin", 50, 0, 50, "warrior", "orc", enemyWeapon)
 
+    print(f"A wild {enemy.name} appears!")
+
+    while player.isAlive() and enemy.isAlive():
+        print(f"\n{player.name} - Health: {player.health}, Mana: {player.mana}, Stamina: {player.stamina}")
+        print(f"{enemy.name} - Health: {enemy.health}")
+
+        action = input("Do you attack/heal/quit?").lower()
+
+        if action == "attack":
+            player.attackTarget(enemy)
+            if enemy.isAlive():
+                enemy.attackTarget(player)
+        elif action == "heal":
+            player.heal()
+            if enemy.isAlive():
+                enemy.attackTarget(player)
+        elif action == "quit":
+            print("Exiting battle demo.")
+            break
+        else:
+            print("Invalid action. Please enter 'attack', 'heal', or 'quit'.")
+
+    if not enemy.isAlive():
+        print(f"You have defeated the {enemy.name}!")
+    elif not player.isAlive():
+        print("You have been defeated. Game over.")
+
+mainMenuSeq()
